@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yönetici Paneli</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/style.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container">
+    <div class="text-center mt-4">
+      <img src="/static/logo.png" alt="Logo" class="logo-img">
+    </div>
+    <div class="mt-3">
+      <h4>Yönetici Paneli</h4>
+
+      <div class="d-flex justify-content-between mb-3">
+        <a href="{{ url_for('add_personnel') }}" class="btn btn-primary">➕ Yeni Personel Ekle</a>
+        <a href="{{ url_for('izin_grafik') }}" class="btn btn-info text-white">📊 İzin Grafiğini Gör</a>
+      </div>
+      <table class="table table-hover">
+        <thead><tr><th>ID</th><th>Ad</th><th>Tür</th><th>Süre</th><th>Başlangıç</th><th>Bitiş</th><th>Durum</th><th>İşlem</th></tr></thead>
+        <tbody>
+        {% for i in izinler %}
+          <tr>
+            <td>{{ i['id'] }}</td><td>{{ i['ad'] }}</td><td>{{ i['tur'] }}</td><td>{{ i['sure'] }}</td><td>{{ i['baslangic'] }}</td><td>{{ i['bitis'] }}</td><td>{{ i['durum'] }}</td>
+            <td>
+              {% if i['durum'] == 'Bekliyor' %}
+                <a href="/izin_onayla/{{ i['id'] }}" class="btn btn-success btn-sm">Onayla</a>
+                <a href="/izin_reddet/{{ i['id'] }}" class="btn btn-danger btn-sm">Reddet</a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="mt-4">
+        <h5>📊 Personel İzin Grafiği</h5>
+        <canvas id="izinChart" width="800" height="300"></canvas>\n      </div>
+
+      <a href="/cikis" class="btn btn-secondary">Çıkış</a>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('izinChart');
+  const izinChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ isimler|tojson }},
+      datasets: [{
+        label: 'Onaylanan İzin Günleri',
+        data: {{ izin_sureleri|tojson }},
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Personel Ekle</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Personel Paneli</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/style.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container">
+    <div class="text-center mt-4">
+      <img src="/static/logo.png" alt="Logo" class="logo-img">
+    </div>
+    <div class="mt-3">
+      <h4>Hoşgeldin, {{ ad }}</h4>
+    <div class="card mt-4 shadow-sm">
+      <div class="card-body text-center">
+        <h5 class="card-title">📅 İzin Durumun</h5>
+        <p>Toplam İzin Hakkı: <strong>{{ toplam }} gün</strong></p>
+        <p>Kullanılan İzin: <strong>{{ kullanilan }} gün</strong></p>
+        <p>Kalan İzin: <strong class="text-success">{{ kalan }} gün</strong></p>
+      </div>
+    </div>
+      <p>Toplam izin hakkı: <strong>{{ toplam }}</strong> gün — Kalan: <strong>{{ kalan }}</strong> gün</p>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5>Yeni İzin Talebi</h5>
+          <form method="POST" action="/izin_talebi">
+            <div class="mb-2">
+              <select name="izin_turu" class="form-select" required>
+                <option value="Yıllık">Yıllık</option>
+                <option value="Mazeret">Mazeret</option>
+                <option value="Sağlık">Sağlık</option>
+                <option value="Ücretsiz">Ücretsiz</option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <input type="number" name="sure" class="form-control" placeholder="Kaç gün?" required>
+            </div>
+            <div class="mb-2">
+              <input type="date" name="baslangic" class="form-control" required>
+            </div>
+            <button class="btn btn-success">Talep Gönder</button>
+          </form>
+        </div>
+      </div>
+
+      <h5>İzin Geçmişin</h5>
+      <table class="table table-striped">
+        <thead><tr><th>Tür</th><th>Süre</th><th>Başlangıç</th><th>Bitiş</th><th>Durum</th></tr></thead>
+        <tbody>
+        {% for i in izinler %}
+          <tr>
+            <td>{{ i['izin_turu'] }}</td><td>{{ i['sure'] }}</td><td>{{ i['baslangic'] }}</td><td>{{ i['bitis'] }}</td><td>{{ i['durum'] }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <a href="/cikis" class="btn btn-secondary">Çıkış</a>
+    </div>
+  </div>
+</body>
+</html>
